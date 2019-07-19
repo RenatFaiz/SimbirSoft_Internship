@@ -11,6 +11,10 @@ public class TCPConnection {
     private final BufferedReader in;
     private final BufferedWriter out;
 
+    public TCPConnection(TCPConnectionListener eventListener, String ipAddr, int port) throws IOException {
+        this(eventListener, new Socket(ipAddr, port));
+    }
+
     public TCPConnection(TCPConnectionListener eventListener, Socket socket) throws IOException {
         this.eventListener = eventListener;
         this.socket = socket;
@@ -30,7 +34,7 @@ public class TCPConnection {
                         // or String msg = in.readLine() and msg in eventListener();
                     }
                 } catch (IOException e) {
-
+                    eventListener.onException(TCPConnection.this, e);
                 } finally {
                     eventListener.onDisconnect(TCPConnection.this);
                 }
